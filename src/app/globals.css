@@ -1,0 +1,243 @@
+@import "tailwindcss";
+
+/* Couleurs relevées dans la feuille de style de la maquette Lovable du client (2026-11-06) :
+   mêmes valeurs oklch, pour que le client reconnaisse son site. */
+@theme {
+  --color-fond: oklch(12% 0 0);
+  --color-texte: oklch(97% 0 0);
+  --color-carte: oklch(17% 0 0);
+  --color-sourdine: oklch(22% 0 0);
+  --color-gris: oklch(72% 0 0);
+  --color-or: oklch(83% 0.15 88);
+  --color-sur-or: oklch(12% 0 0);
+  --color-accent: oklch(25% 0.03 88);
+  --color-filet: oklch(83% 0.15 88 / 0.35);
+  --color-filet-neutre: oklch(30% 0 0);
+  --color-champ: oklch(35% 0 0);
+  --color-occupe: oklch(30% 0 0);
+  --color-alerte: oklch(60% 0.22 27);
+  /* Vert et rouge des statuts : ajoutés, absents de la maquette. Contraste vérifié sur le fond (WCAG 1.4.3). */
+  --color-succes: oklch(78% 0.14 150);
+  --color-alerte-texte: oklch(72% 0.17 27);
+
+  --font-titre: var(--font-archivo-black), "Arial Black", sans-serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-padding-top: 5rem; /* hauteur de l'en-tête collant (4rem) + marge, pour les ancres */
+  }
+  body {
+    background: var(--color-fond);
+    color: var(--color-texte);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Pas de délai de double tap sur les commandes tactiles (Vercel Web Interface Guidelines, section Touch :
+     « touch-action: manipulation »). La surbrillance native au toucher est gardée : seuls les boutons ont un état :active. */
+  a, button, label, summary, input, select, textarea {
+    touch-action: manipulation;
+  }
+  ::selection {
+    background: var(--color-or);
+    color: var(--color-sur-or);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-or);
+    outline-offset: 2px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-titre);
+    font-weight: 400; /* Archivo Black n'existe qu'en une graisse : éviter le faux gras du navigateur */
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  .surtitre {
+    font-family: var(--font-titre);
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-or);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem; /* 44 px : taille de cible de WCAG 2.5.5 */
+    padding: 0 1.25rem;
+    border-radius: 0.25rem;
+    font-family: var(--font-titre);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition:
+      background-color 150ms ease,
+      color 150ms ease,
+      border-color 150ms ease,
+      transform 100ms ease;
+    cursor: pointer;
+  }
+  .btn:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+  .btn-or {
+    background: var(--color-or);
+    color: var(--color-sur-or);
+  }
+  .btn-or:hover:not(:disabled) {
+    background: oklch(88% 0.14 88);
+  }
+  .btn-contour {
+    border: 1px solid oklch(97% 0 0 / 0.7);
+    color: var(--color-texte);
+  }
+  .btn-contour:hover:not(:disabled) {
+    border-color: var(--color-or);
+    color: var(--color-or);
+  }
+  .btn-discret {
+    border: 1px solid var(--color-filet-neutre);
+    color: var(--color-texte);
+  }
+  .btn-discret:hover:not(:disabled) {
+    border-color: var(--color-or);
+  }
+  .lien {
+    color: var(--color-or);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-filet);
+  }
+  .lien:hover {
+    text-decoration-color: var(--color-or);
+  }
+  .champ {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--color-champ);
+    background: var(--color-carte);
+    color: var(--color-texte);
+    transition: border-color 150ms ease;
+  }
+  .champ::placeholder {
+    color: oklch(60% 0 0);
+  }
+  .champ:hover {
+    border-color: oklch(45% 0 0);
+  }
+  .champ:focus-visible {
+    outline: none;
+    border-color: var(--color-or);
+    box-shadow: 0 0 0 1px var(--color-or);
+  }
+  .champ[aria-invalid="true"] {
+    border-color: var(--color-alerte);
+  }
+  .etiquette {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-gris);
+  }
+  .chiffres {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Texte long des pages légales */
+  .prose-legale h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.05rem;
+    color: var(--color-or);
+  }
+  .prose-legale p,
+  .prose-legale li {
+    color: oklch(85% 0 0);
+    line-height: 1.7;
+  }
+  .prose-legale p + p {
+    margin-top: 0.75rem;
+  }
+  .prose-legale ul {
+    margin-top: 0.5rem;
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+  .prose-legale h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .prose-legale ol {
+    margin-top: 0.5rem;
+    padding-left: 1.25rem;
+    list-style: decimal;
+  }
+  .prose-legale a {
+    color: var(--color-or);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  /* Ce que le studio doit fournir avant la mise en ligne : visible exprès, pour qu'aucun trou ne passe inaperçu. */
+  .a-completer {
+    color: var(--color-alerte-texte);
+    border-bottom: 1px dashed currentColor;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .sans-impression {
+    display: none !important;
+  }
+  /* Le gris et l'or du thème sombre passent mal sur papier blanc : on les fonce à l'impression
+     (fiche tarifaire, page de réservation). */
+  .text-gris,
+  .text-sourdine {
+    color: #444 !important;
+  }
+  .text-or {
+    color: #000 !important;
+  }
+  .bg-carte {
+    background: #fff !important;
+  }
+  .border-filet,
+  .border-filet-neutre {
+    border-color: #bbb !important;
+  }
+}

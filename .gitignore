@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.env
+.env.local
+data/
+.outbox/
+_assets-client/
+*.tsbuildinfo
+next-env.d.ts
+.playwright/
+.next-dev.log
+.next-start.log
+.playwright-cli/
