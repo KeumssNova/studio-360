@@ -7,6 +7,7 @@ import { FERMETURE, OUVERTURE, TAUX_TVA, VERSION_CGV } from "@/lib/regles";
 export const metadata: Metadata = {
   title: "Conditions générales de location",
   description: "Réservation, prix, annulation, droit de rétractation et médiation pour la location des espaces Studio 360.",
+  alternates: { canonical: "/cgv" },
 };
 
 // Sources vérifiées le 6 novembre 2026 (articles du Code de la consommation lus via french-business-law.com,

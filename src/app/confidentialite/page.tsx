@@ -6,6 +6,7 @@ import { STUDIO_EMAIL } from "@/lib/config";
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
   description: "Données collectées par le site Studio 360, pourquoi, combien de temps, et vos droits.",
+  alternates: { canonical: "/confidentialite" },
 };
 
 // Contenu : RGPD (règlement UE 2016/679), art. 13 (information au moment de la collecte : responsable,

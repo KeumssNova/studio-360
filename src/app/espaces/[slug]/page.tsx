@@ -3,11 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Check } from "@phosphor-icons/react/dist/ssr";
 import { Galerie } from "@/components/Galerie";
+import { JsonLd } from "@/components/JsonLd";
 import { PrixTtc } from "@/components/PrixTtc";
 import { ESPACES, espaceParSlug } from "@/data/catalogue";
 import { prix } from "@/lib/format";
+import { SITE_URL } from "@/lib/config";
 import { FERMETURE, OUVERTURE } from "@/lib/regles";
 import { optionsDe } from "@/lib/reservations";
+import { OG_BASE, imagePartage } from "@/lib/seo";
 import { espaceVitrine } from "@/lib/vitrine";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -15,10 +18,29 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const e = espaceParSlug((await params).slug);
   if (!e) return {};
-  return { title: e.studio ? `${e.nom}, ${e.studio}` : e.nom, description: e.accroche, openGraph: { images: [e.photos[0]] } };
+  return {
+    title: e.studio ? `${e.nom}, ${e.studio}` : e.nom,
+    description: e.accroche,
+    alternates: { canonical: `/espaces/${e.slug}` },
+    openGraph: { ...OG_BASE, images: imagePartage(e) },
+  };
 }
 
 const CATEGORIE = { plateaux: "Plateaux & studios", bureaux: "Bureaux & salles" } as const;
+
+// Fil d'Ariane pour Google (developers.google.com/search/docs/appearance/structured-data/breadcrumb, lu le
+// 6 novembre 2026) : le dernier élément, la page elle-même, n'a pas besoin d'URL (« item »).
+function filAriane(nom: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Accueil", item: `${SITE_URL}/` },
+      { "@type": "ListItem", position: 2, name: "Espaces", item: `${SITE_URL}/espaces` },
+      { "@type": "ListItem", position: 3, name: nom },
+    ],
+  };
+}
 
 export default async function FicheEspace({ params }: Props) {
   const { slug } = await params;
@@ -29,12 +51,13 @@ export default async function FicheEspace({ params }: Props) {
 
   return (
     <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
+      <JsonLd donnees={filAriane(e.nom)} />
       <Link href="/espaces" className="inline-flex items-center gap-2 text-sm text-gris hover:text-or">
         <ArrowLeft size={16} /> Tous les espaces
       </Link>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
-        <Galerie photos={e.photos} nom={e.nom} />
+        <Galerie photos={e.photos} nom={e.nom} legendes={e.legendes} />
 
         <div>
           <p className="surtitre">

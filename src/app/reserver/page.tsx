@@ -9,6 +9,7 @@ import { espacesVitrine } from "@/lib/vitrine";
 export const metadata: Metadata = {
   title: "Réserver",
   description: "Choisissez un espace, une date et un créneau, à l'heure ou à la journée. Demande confirmée par le studio.",
+  alternates: { canonical: "/reserver" },
 };
 
 const GROUPES = [

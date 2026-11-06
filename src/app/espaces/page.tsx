@@ -7,6 +7,7 @@ import { espacesVitrine, fiches } from "@/lib/vitrine";
 export const metadata: Metadata = {
   title: "Espaces",
   description: "Plateau TV, fonds verts, studio podcast, studio d'enregistrement, salle de formation, bureaux et cabines de montage.",
+  alternates: { canonical: "/espaces" },
 };
 
 const FILTRES: { v?: Categorie; texte: string }[] = [

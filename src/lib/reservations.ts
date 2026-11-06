@@ -3,7 +3,7 @@ import { and, asc, desc, eq, inArray, or } from "drizzle-orm";
 import { z } from "zod";
 import { getDb, schema } from "./db";
 import type { Statut } from "./db/schema";
-import { CONTACT, ESPACES, OPTIONS, OPTIONS_EXCLUSIVES, espaceParSlug, type OptionId } from "@/data/catalogue";
+import { ESPACES, adresseTexte, OPTIONS, OPTIONS_EXCLUSIVES, espaceParSlug, type OptionId } from "@/data/catalogue";
 import {
   FERMETURE,
   OUVERTURE,
@@ -363,7 +363,7 @@ const PHRASE_STATUT: Record<Statut, string> = {
 // (CJUE, 5 juillet 2012, Content Services, C-49/11) : le texte est donc dans l'e-mail lui-même.
 // Formulaire : annexe à l'art. R221-1, même texte que sur /cgv.
 function confirmationParticulier(r: Reservation) {
-  const adresse = CONTACT.adresse || "[adresse postale du studio, à compléter]";
+  const adresse = adresseTexte() || "[adresse postale du studio, à compléter]";
   return [
     `Conditions générales acceptées : version du ${r.versionCgv ?? VERSION_CGV}, consultables sur ${SITE_URL}/cgv.`,
     `Droit de rétractation : vous pouvez vous rétracter pendant 14 jours à compter de cette confirmation, soit jusqu'au ${dateLongue(finDelaiRetractation(maintenantParis(r.confirmeeLe ?? new Date()).date))} inclus, sans motif ni frais (art. L221-18 et L221-19). Depuis la page de votre réservation, bouton « Renoncer au contrat ici », ou en nous écrivant, par exemple avec le formulaire ci-dessous.`,

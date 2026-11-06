@@ -12,6 +12,7 @@ import { espacesVitrine, fiches, type FicheVitrine } from "@/lib/vitrine";
 export const metadata: Metadata = {
   title: "Tarifs",
   description: "Fiche tarifaire du Studio 360 : prix à l'heure et à la journée de chaque espace, options et conditions.",
+  alternates: { canonical: "/tarifs" },
 };
 
 // La maquette proposait une « fiche tarifaire » : ici une page qui s'imprime proprement

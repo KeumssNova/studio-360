@@ -95,3 +95,14 @@ export const messages = pgTable("messages", {
   texte: text("texte").notNull(),
   creeLe: timestamp("cree_le", { withTimezone: true }).notNull().defaultNow(),
 });
+
+// Limite de fréquence des formulaires publics (lib/limite.ts) : une ligne par envoi, effacée après 24 h.
+// cle = action + empreinte SHA-256 de l'adresse IP : l'IP elle-même n'est jamais stockée.
+export const limites = pgTable(
+  "limites",
+  {
+    cle: text("cle").notNull(),
+    creeLe: timestamp("cree_le", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("limites_cle_date").on(t.cle, t.creeLe)],
+);

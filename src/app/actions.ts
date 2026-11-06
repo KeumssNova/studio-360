@@ -17,6 +17,7 @@ import {
 } from "@/lib/reservations";
 import type { Statut } from "@/lib/db/schema";
 import { FERMETURE, OUVERTURE, maintenantParis } from "@/lib/regles";
+import { MESSAGE_LIMITE, autoriser } from "@/lib/limite";
 
 // Les Server Actions sont des points d'entrée publics : chacune revérifie qui appelle
 // (doc Next.js 16, guides/data-security, « Authentication and authorization »).
@@ -24,6 +25,10 @@ import { FERMETURE, OUVERTURE, maintenantParis } from "@/lib/regles";
 /* ---------- Réservation ---------- */
 
 export async function envoyerDemande(donnees: unknown): Promise<ResultatDemande> {
+  // Champ piège « site », caché aux humains : rempli, c'est un robot. On ne crée rien et on ne le lui dit pas.
+  if (donnees && typeof donnees === "object" && "site" in donnees && (donnees as { site?: unknown }).site)
+    return { ok: false, erreur: "La demande n'a pas pu être envoyée." };
+  if (!(await autoriser("reservation"))) return { ok: false, erreur: MESSAGE_LIMITE };
   return creerDemande(donnees);
 }
 
@@ -50,6 +55,7 @@ export async function demanderLien(_: EtatConnexion, f: FormData): Promise<EtatC
   const email = z.email().safeParse(String(f.get("email") ?? "").trim());
   if (!email.success) return { erreur: "Adresse e-mail invalide." };
   if (f.get("site")) return { ok: true, email: email.data }; // champ piège rempli : un robot, on fait semblant
+  if (!(await autoriser("connexion"))) return { erreur: MESSAGE_LIMITE };
   const r = await envoyerLienConnexion(email.data, String(f.get("retour") ?? ""));
   return r.ok ? { ok: true, email: email.data } : { erreur: r.erreur };
 }
@@ -96,6 +102,7 @@ export async function envoyerMessage(_: EtatContact, f: FormData): Promise<EtatC
         texte: String(f.get("texte") ?? ""),
       },
     };
+  if (!(await autoriser("contact"))) return { erreur: MESSAGE_LIMITE, valeurs: { ...m.data, sujet: m.data.sujet ?? "" } };
   await enregistrerMessage(m.data);
   return { ok: true };
 }

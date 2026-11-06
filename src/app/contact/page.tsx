@@ -9,6 +9,7 @@ import { FERMETURE, OUVERTURE } from "@/lib/regles";
 export const metadata: Metadata = {
   title: "Contact",
   description: "Écrire au Studio 360 : question, devis sur plusieurs jours, visite des espaces.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function Contact() {

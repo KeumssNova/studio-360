@@ -3,7 +3,10 @@
 import Image from "next/image";
 import { useState } from "react";
 
-export function Galerie({ photos, nom }: { photos: string[]; nom: string }) {
+// Texte alternatif : la légende du client si son nom de fichier en donnait une, sinon le nom de l'espace.
+// Google : l'attribut alt est le plus important pour le référencement des images, il doit décrire la photo
+// (developers.google.com/search/docs/appearance/google-images, lu le 6 novembre 2026).
+export function Galerie({ photos, nom, legendes }: { photos: string[]; nom: string; legendes?: (string | null)[] }) {
   const [i, setI] = useState(0);
   return (
     <div>
@@ -11,9 +14,9 @@ export function Galerie({ photos, nom }: { photos: string[]; nom: string }) {
         <Image
           key={photos[i]}
           src={photos[i]}
-          alt={`${nom}, photo ${i + 1} sur ${photos.length}`}
+          alt={legendes?.[i] ? `${nom} : ${legendes[i]}` : `${nom}, photo ${i + 1} sur ${photos.length}`}
           fill
-          priority={i === 0}
+          preload={i === 0}
           sizes="(min-width: 1024px) 640px, 100vw"
           className="object-cover"
         />

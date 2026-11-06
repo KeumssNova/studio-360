@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CarteEspace } from "@/components/CarteEspace";
+import { JsonLd } from "@/components/JsonLd";
 import { PrixTtc } from "@/components/PrixTtc";
-import { CONTACT, OPTIONS } from "@/data/catalogue";
+import { CONTACT, ESPACES, OPTIONS, adresseTexte } from "@/data/catalogue";
+import { SITE_URL, STUDIO_EMAIL } from "@/lib/config";
 import { prix, prixTtc } from "@/lib/format";
 import { FERMETURE, OUVERTURE } from "@/lib/regles";
 import { lireTarifs } from "@/lib/reservations";
@@ -12,15 +15,47 @@ import { espacesVitrine, fiches } from "@/lib/vitrine";
 // Accroche, sous-titre et ligne de verbes : textes de la maquette du client, gardés mot pour mot.
 const MOTS_TITRE = ["Espaces", "Production", "Création", "Événements"];
 
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+// Données structurées de l'entreprise (developers.google.com/search/docs/appearance/structured-data/local-business
+// et /organization, lus le 6 novembre 2026). LocalBusiness exige le nom et l'adresse postale : tant que l'adresse
+// manque dans le catalogue, la page publie un simple Organization. schema.org n'a pas de sous-type pour la location
+// de studios (TelevisionStation et RadioStation désignent des diffuseurs) : LocalBusiness générique.
+// Absents faute d'information confirmée par le client : téléphone, coordonnées GPS, horaires d'ouverture.
+function donneesEntreprise(prixMin: number, prixMax: number) {
+  const { rue, codePostal, ville } = CONTACT.adresse;
+  const local = Boolean(adresseTexte());
+  return {
+    "@context": "https://schema.org",
+    "@type": local ? "LocalBusiness" : "Organization",
+    name: "Studio 360",
+    url: `${SITE_URL}/`,
+    // Google : logo d'au moins 112 x 112 px. logo.jpg fait 1040 x 1040.
+    logo: `${SITE_URL}/logo.jpg`,
+    image: `${SITE_URL}${ESPACES[0].photos[0]}`,
+    email: STUDIO_EMAIL,
+    ...(CONTACT.instagramVerifie ? { sameAs: [`https://www.instagram.com/${CONTACT.instagram}/`] } : {}),
+    ...(local
+      ? {
+          address: { "@type": "PostalAddress", streetAddress: rue, postalCode: codePostal, addressLocality: ville, addressCountry: "FR" },
+          // Google : priceRange en moins de 100 caractères, par exemple une fourchette de prix.
+          priceRange: `${prixMin}-${prixMax} € HT`,
+        }
+      : {}),
+  };
+}
+
 export default async function Accueil() {
   const [liste, { options }] = await Promise.all([espacesVitrine(), lireTarifs()]);
   const plateaux = fiches(liste, "plateaux");
   const bureaux = fiches(liste, "bureaux");
   const prixMin = Math.min(...liste.map((e) => e.prixHeure));
+  const prixMax = Math.max(...liste.map((e) => e.prixJournee));
   const opts = OPTIONS.filter((o) => options[o.id]?.active !== false).map((o) => ({ ...o, prix: options[o.id]?.prix ?? o.prix }));
 
   return (
     <>
+      <JsonLd donnees={donneesEntreprise(prixMin, prixMax)} />
       {/* Titre et image côte à côte : la maquette centrait tout ; l'anneau or reprend celui du logo. */}
       <section className="mx-auto grid max-w-6xl items-center gap-12 px-4 pt-14 pb-16 sm:px-6 md:pt-20 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
         <div>
@@ -54,10 +89,10 @@ export default async function Accueil() {
           <div aria-hidden="true" className="absolute -inset-4 rounded-full border border-filet" />
           <div className="relative aspect-square overflow-hidden rounded-full border-2 border-or">
             <Image
-              src="/espaces/s360-008.jpg"
+              src={ESPACES[0].photos[0]}
               alt="Le grand plateau TV du Studio 360"
               fill
-              priority
+              preload
               sizes="(min-width: 1024px) 460px, 90vw"
               className="object-cover"
             />

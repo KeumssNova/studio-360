@@ -113,6 +113,11 @@ async function initialiser(db: Db) {
       texte text NOT NULL,
       cree_le timestamptz NOT NULL DEFAULT now()
     );
+    CREATE TABLE IF NOT EXISTS limites (
+      cle text NOT NULL,
+      cree_le timestamptz NOT NULL DEFAULT now()
+    );
+    CREATE INDEX IF NOT EXISTS limites_cle_date ON limites (cle, cree_le);
   `;
   // Une requête par instruction : le protocole étendu de Postgres n'en accepte qu'une à la fois.
   for (const instruction of ddl.split(";").map((x) => x.trim()).filter(Boolean)) {

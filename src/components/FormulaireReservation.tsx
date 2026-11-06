@@ -227,6 +227,7 @@ export function FormulaireReservation({
       ...Object.fromEntries(champs.map((c) => [c.nom, valeurs[c.nom]])),
       cgv,
       executionAvantDelai: type === "particulier" && avantDelai,
+      site: String(new FormData(ev.currentTarget).get("site") ?? ""),
     };
     demarrer(async () => {
       try {
@@ -512,6 +513,12 @@ export function FormulaireReservation({
               1 h minimum • + {prix(espace.tarif.prixHeureSup)} HT / heure supplémentaire • plafonné au tarif journée (
               {prix(espace.tarif.prixJournee)} HT). Une caution peut être demandée.
             </p>
+
+            {/* Champ piège : invisible pour les visiteurs, rempli par les robots (action envoyerDemande). */}
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="r-site">Site</label>
+              <input id="r-site" name="site" tabIndex={-1} autoComplete="off" />
+            </div>
 
             <label className="mt-5 flex cursor-pointer items-start gap-3 text-sm">
               <input
