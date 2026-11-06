@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node --test --experimental-strip-types tests/*.test.ts"
+    "test": "node --test --experimental-strip-types tests/*.test.ts",
+    "photos": "node --experimental-strip-types scripts/photos.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.15",

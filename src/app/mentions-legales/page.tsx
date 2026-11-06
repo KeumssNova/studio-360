@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AC, PageLegale } from "@/components/PageLegale";
 import { STUDIO_EMAIL } from "@/lib/config";
+import { adressePage } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
   description: "Éditeur, directeur de la publication et hébergeur du site Studio 360.",
-  alternates: { canonical: "/mentions-legales" },
+  ...adressePage("/mentions-legales"),
 };
 
 // Contenu obligatoire : loi n° 2004-575 du 21 juin 2004 (LCEN), art. 1-1 (créé par la loi SREN

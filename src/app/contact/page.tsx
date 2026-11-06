@@ -5,11 +5,12 @@ import { FormulaireContact } from "@/components/FormulaireContact";
 import { CONTACT } from "@/data/catalogue";
 import { STUDIO_EMAIL } from "@/lib/config";
 import { FERMETURE, OUVERTURE } from "@/lib/regles";
+import { adressePage } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: "Écrire au Studio 360 : question, devis sur plusieurs jours, visite des espaces.",
-  alternates: { canonical: "/contact" },
+  ...adressePage("/contact"),
 };
 
 export default function Contact() {

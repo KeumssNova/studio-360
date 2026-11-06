@@ -5,11 +5,12 @@ import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { surfaceCourte } from "@/components/CarteEspace";
 import { prix, prixTtc } from "@/lib/format";
 import { espacesVitrine } from "@/lib/vitrine";
+import { adressePage } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Réserver",
   description: "Choisissez un espace, une date et un créneau, à l'heure ou à la journée. Demande confirmée par le studio.",
-  alternates: { canonical: "/reserver" },
+  ...adressePage("/reserver"),
 };
 
 const GROUPES = [

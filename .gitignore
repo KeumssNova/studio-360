@@ -11,3 +11,4 @@ next-env.d.ts
 .next-dev.log
 .next-start.log
 .playwright-cli/
+photos-originales/

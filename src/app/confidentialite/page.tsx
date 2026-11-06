@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AC, PageLegale } from "@/components/PageLegale";
 import { STUDIO_EMAIL } from "@/lib/config";
+import { adressePage } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
   description: "Données collectées par le site Studio 360, pourquoi, combien de temps, et vos droits.",
-  alternates: { canonical: "/confidentialite" },
+  ...adressePage("/confidentialite"),
 };
 
 // Contenu : RGPD (règlement UE 2016/679), art. 13 (information au moment de la collecte : responsable,
@@ -48,6 +49,13 @@ export default function Confidentialite() {
         ne reçoit de Google que votre adresse e-mail et la confirmation qu&apos;elle est vérifiée. Base légale : le service de compte
         que vous demandez (art. 6.1 b).
       </p>
+      <h3>Protection contre les envois en masse</h3>
+      <p>
+        Quand vous envoyez une demande, un message ou une demande de lien de connexion, le site garde une empreinte de votre
+        adresse IP (une suite de caractères calculée à partir d&apos;elle, sans l&apos;adresse elle-même) et l&apos;heure de
+        l&apos;envoi. Elle sert seulement à limiter le nombre d&apos;envois par heure depuis une même connexion, contre les
+        robots. Base légale : l&apos;intérêt légitime du studio à protéger son site (art. 6.1 f).
+      </p>
       <p>Le site ne fait aucune mesure d&apos;audience, aucune publicité, et ne vend ni ne prête vos données.</p>
 
       <h2>Qui y a accès</h2>
@@ -70,6 +78,7 @@ export default function Confidentialite() {
       <ul>
         <li>Lien de connexion : valable 10 minutes, utilisable une seule fois.</li>
         <li>Session : 30 jours, ou jusqu&apos;à la déconnexion.</li>
+        <li>Empreinte de l&apos;adresse IP : 24 heures au plus, puis effacée.</li>
         <li>
           Réservations : <AC>durée à fixer, puis archivage limité aux pièces comptables</AC>.
         </li>

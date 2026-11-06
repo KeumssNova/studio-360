@@ -33,6 +33,32 @@ npx tsc --noEmit     # types
 npm run build        # build de production
 ```
 
+## Photos du client
+
+Les photos actuelles viennent de la maquette, en basse définition. Quand le client envoie les originaux :
+
+1. Les ranger dans `photos-originales/<slug>/` (dossier ignoré par git), un dossier par espace : `grand-plateau-tv`, `grand-fond-vert`, `petit-fond-vert`, `studio-podcast`, `studio-enregistrement`, `salle-formation-reunion`, `petit-bureau`, `grand-bureau`, et `cabines` pour les trois cabines de montage.
+2. Nommer chaque fichier en décrivant la photo, dans l'ordre voulu : `01-plateau-vu-de-la-regie.jpg` donne le texte alternatif « Plateau vu de la regie ». Un nom d'appareil (`IMG_1234.jpg`) ne décrit rien : le script le signale.
+3. `npm run photos`. Le script redresse, réduit à 1920 px de large, retire les métadonnées (dont la position GPS), écrit les photos dans `public/espaces/`, une image de partage 1200 x 630 par espace dans `public/og/`, et la liste dans `src/data/photos-client.ts`. Il signale les photos trop petites, en hauteur ou illisibles.
+4. Relancer le site et vérifier les galeries.
+
+Formats lus : JPEG, PNG, WebP, TIFF. Les photos HEIC d'iPhone s'exportent d'abord en JPEG. Un espace sans dossier garde ses photos actuelles.
+
+## Référencement
+
+- Chaque page publique a son titre, sa description, sa canonique et son `og:url` (même adresse), son image de partage (Open Graph et X).
+- Données structurées : `Organization` sur l'accueil tant que l'adresse est vide, `LocalBusiness` avec adresse et fourchette de prix dès que `CONTACT.adresse` est rempli. Fil d'Ariane (`BreadcrumbList`) sur chaque fiche d'espace.
+- `robots.txt` et `sitemap.xml` sont générés. Les pages privées (compte, gestion, réservation, connexion) sont exclues et en `noindex`.
+- Tout repose sur `SITE_URL` : sans lui, les adresses pointent sur localhost.
+
+## Sécurité
+
+- En-têtes sur toutes les pages (`next.config.ts`, sources en commentaire) : politique de sécurité du contenu sans ressource externe, interdiction d'afficher le site dans un cadre, `nosniff`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`, pas de `X-Powered-By`. HSTS s'ajoute seul quand `SITE_URL` est en https.
+- **Les en-têtes se figent au build** : `SITE_URL` doit être défini avant `npm run build`.
+- Ajouter un service externe (mesure d'audience, carte, vidéo, chat) demande d'ouvrir sa source dans la politique de sécurité du contenu, sinon le navigateur le bloque.
+- Formulaires publics (réservation, contact, connexion) : limite d'envois par heure et par adresse IP (`src/lib/limite.ts`, seuils provisoires), et champ piège contre les robots. L'IP n'est gardée qu'en empreinte, 24 h, comme l'annonce la politique de confidentialité.
+- La limite lit l'IP dans `x-forwarded-for`. Vercel réécrit cet en-tête. Chez un autre hébergeur, vérifier que son proxy le réécrit aussi, sinon un robot peut le falsifier.
+
 ## Variables d'environnement
 
 | Variable | Rôle | Vide |
@@ -51,7 +77,7 @@ Les clés vont dans `.env.local` (ignoré par git) ou dans les variables de l'h�
 
 Dans l'ordre :
 
-1. **Contenu du client** : adresse postale (`CONTACT.adresse` dans `src/data/catalogue.ts`, elle sert au formulaire de rétractation), compte Instagram exact, photos en bonne définition, tous les passages entre crochets des pages légales (`src/app/mentions-legales`, `src/app/cgv`, `src/app/confidentialite`).
+1. **Contenu du client** : adresse postale (`CONTACT.adresse` dans `src/data/catalogue.ts`, elle sert au formulaire de rétractation et aux données structurées), compte Instagram exact (puis `instagramVerifie: true`), photos en bonne définition passées par `npm run photos`, tous les passages entre crochets des pages légales (`src/app/mentions-legales`, `src/app/cgv`, `src/app/confidentialite`).
 2. **Relecture juridique** des trois pages légales par un professionnel. L'encadré « Projet de texte » de `src/components/PageLegale.tsx` s'enlève seulement après.
 3. **Base Postgres** de production, dans l'Union européenne de préférence : `DATABASE_URL`. Les tables se créent seules au premier démarrage. PGlite ne convient pas à un hébergement serverless (disque effacé à chaque déploiement).
 4. **E-mails** : domaine vérifié chez Resend (enregistrements DNS), puis `RESEND_API_KEY` et `MAIL_FROM`.
@@ -59,6 +85,7 @@ Dans l'ordre :
 6. **Google** (facultatif) : identifiants OAuth au nom du studio, URI de redirection `https://<domaine>/auth/google/retour`.
 7. `ADMIN_EMAILS` et `STUDIO_EMAIL` avec les vraies adresses du studio.
 8. Tester une réservation complète sur le domaine final : demande, e-mail du studio, confirmation, e-mail du client, PDF, rétractation.
+9. **Google** : déclarer le site dans Search Console et y envoyer `https://<domaine>/sitemap.xml`. Créer ou relier la fiche d'établissement Google du studio (même nom, même adresse que sur le site) : c'est elle qui fait apparaître le studio sur Maps.
 
 ### Coûts relevés le 6 novembre 2026 (pages tarifs officielles)
 

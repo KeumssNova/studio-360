@@ -8,11 +8,12 @@ import { dateLongue, prix } from "@/lib/format";
 import { FERMETURE, OUVERTURE, TAUX_TVA, maintenantParis } from "@/lib/regles";
 import { lireTarifs } from "@/lib/reservations";
 import { espacesVitrine, fiches, type FicheVitrine } from "@/lib/vitrine";
+import { adressePage } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Tarifs",
   description: "Fiche tarifaire du Studio 360 : prix à l'heure et à la journée de chaque espace, options et conditions.",
-  alternates: { canonical: "/tarifs" },
+  ...adressePage("/tarifs"),
 };
 
 // La maquette proposait une « fiche tarifaire » : ici une page qui s'imprime proprement

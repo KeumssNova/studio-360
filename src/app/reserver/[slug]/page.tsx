@@ -6,7 +6,7 @@ import { FormulaireReservation } from "@/components/FormulaireReservation";
 import { espaceParSlug } from "@/data/catalogue";
 import { FERMETURE, HORIZON_JOURS, ajouterJours, maintenantParis } from "@/lib/regles";
 import { optionsDe } from "@/lib/reservations";
-import { OG_BASE, imagePartage } from "@/lib/seo";
+import { adressePage, imagePartage } from "@/lib/seo";
 import { espacesVitrine } from "@/lib/vitrine";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -17,8 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `Réserver : ${e.nom}`,
     description: `Date, créneau et options pour ${e.nom}. Demande confirmée par le studio.`,
-    alternates: { canonical: `/reserver/${e.slug}` },
-    openGraph: { ...OG_BASE, images: imagePartage(e) },
+    ...adressePage(`/reserver/${e.slug}`, imagePartage(e)),
   };
 }
 

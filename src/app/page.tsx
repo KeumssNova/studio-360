@@ -11,11 +11,12 @@ import { prix, prixTtc } from "@/lib/format";
 import { FERMETURE, OUVERTURE } from "@/lib/regles";
 import { lireTarifs } from "@/lib/reservations";
 import { espacesVitrine, fiches } from "@/lib/vitrine";
+import { adressePage } from "@/lib/seo";
 
 // Accroche, sous-titre et ligne de verbes : textes de la maquette du client, gardés mot pour mot.
 const MOTS_TITRE = ["Espaces", "Production", "Création", "Événements"];
 
-export const metadata: Metadata = { alternates: { canonical: "/" } };
+export const metadata: Metadata = adressePage("/");
 
 // Données structurées de l'entreprise (developers.google.com/search/docs/appearance/structured-data/local-business
 // et /organization, lus le 6 novembre 2026). LocalBusiness exige le nom et l'adresse postale : tant que l'adresse

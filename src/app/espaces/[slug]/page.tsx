@@ -10,7 +10,7 @@ import { prix } from "@/lib/format";
 import { SITE_URL } from "@/lib/config";
 import { FERMETURE, OUVERTURE } from "@/lib/regles";
 import { optionsDe } from "@/lib/reservations";
-import { OG_BASE, imagePartage } from "@/lib/seo";
+import { adressePage, imagePartage } from "@/lib/seo";
 import { espaceVitrine } from "@/lib/vitrine";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -21,8 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: e.studio ? `${e.nom}, ${e.studio}` : e.nom,
     description: e.accroche,
-    alternates: { canonical: `/espaces/${e.slug}` },
-    openGraph: { ...OG_BASE, images: imagePartage(e) },
+    ...adressePage(`/espaces/${e.slug}`, imagePartage(e)),
   };
 }
 

@@ -12,3 +12,10 @@ export function imagePartage(e: Espace): NonNullable<Metadata["openGraph"]>["ima
 }
 
 export const IMAGE_SITE = imagePartage(ESPACES[0]);
+
+// Adresse d'une page : la canonique et og:url, toujours la même. og:url fait partie des quatre propriétés
+// obligatoires du protocole Open Graph, avec og:title, og:type et og:image (ogp.me, lu le 6 novembre 2026).
+// Le chemin est relatif : Next le rend absolu avec metadataBase (layout.tsx), comme la canonique.
+export function adressePage(chemin: string, images = IMAGE_SITE): Pick<Metadata, "alternates" | "openGraph"> {
+  return { alternates: { canonical: chemin }, openGraph: { ...OG_BASE, url: chemin, images } };
+}
